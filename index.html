@@ -112,6 +112,18 @@
     .grid{grid-template-columns:1fr}
     .logo{height:52px}
   }
+  /* sticky contact bar (mobile) */
+  .contact-bar{display:none}
+  @media (max-width:860px){
+    .contact-bar{position:fixed; inset:auto 0 0 0; z-index:50; display:grid; grid-template-columns:1fr 1fr; gap:10px;
+      padding:10px 12px calc(10px + env(safe-area-inset-bottom)); background:rgba(255,255,255,.96);
+      border-top:1px solid var(--line); box-shadow:0 -8px 24px -16px rgba(16,38,47,.35)}
+    .contact-bar a{display:flex; align-items:center; justify-content:center; gap:8px; font-weight:700; font-size:17px;
+      text-decoration:none; border-radius:10px; padding:13px 10px; color:#fff}
+    .contact-bar .call{background:var(--teal-deep)}
+    .contact-bar .wa{background:#1FA855}
+    body{padding-bottom:80px}
+  }
   @media (prefers-reduced-motion:reduce){ *{transition:none!important} }
 </style>
 </head>
@@ -139,17 +151,14 @@
       </div>
 
       <div class="form-card" id="form">
-        <h2>נתאם שיחת היכרות</h2>
-        <p>השאירו פרטים וליאור יחזור אליכם.</p>
+        <h2>בדיקת תיק פנסיוני ללא עלות</h2>
+        <p>השאירו שם וטלפון, וליאור יחזור אליכם לתיאום.</p>
         <form id="lead-form" novalidate>
           <label>שם מלא
             <input type="text" name="שם מלא" autocomplete="name" required>
           </label>
           <label>טלפון
             <input type="tel" name="טלפון" autocomplete="tel" inputmode="tel" required>
-          </label>
-          <label>אימייל
-            <input type="email" name="אימייל" autocomplete="email" required>
           </label>
           <fieldset>
             <legend>מעמד תעסוקתי</legend>
@@ -158,15 +167,12 @@
               <label><input type="radio" name="מעמד תעסוקתי" value="עצמאי"> עצמאי</label>
             </div>
           </fieldset>
-          <label>איפה אתם עובדים?
-            <input type="text" name="מקום עבודה" autocomplete="organization" required>
-          </label>
           <label class="consent">
             <input type="checkbox" name="הסכמה" value="מאשר/ת" required>
             <span>אני מאשר/ת יצירת קשר ואת <a href="privacy.html" target="_blank" rel="noopener">מדיניות הפרטיות</a></span>
           </label>
           <div class="hp" aria-hidden="true"><input type="text" name="_honey" tabindex="-1" autocomplete="off"></div>
-          <button class="btn" type="submit">לתיאום שיחת היכרות</button>
+          <button class="btn" type="submit">לבדיקה ללא עלות</button>
           <p class="msg" id="msg" role="status" aria-live="polite"></p>
         </form>
       </div>
@@ -200,7 +206,7 @@
   <section class="closing">
     <div class="wrap">
       <p>לחשוב אחרת על הכסף שכבר צברתם.</p>
-      <a class="btn" href="#form">לתיאום שיחת היכרות</a>
+      <a class="btn" href="#form">לבדיקה ללא עלות</a>
     </div>
   </section>
 </main>
@@ -214,7 +220,24 @@
   </div>
 </footer>
 
+<nav class="contact-bar" aria-label="יצירת קשר מהירה">
+  <a class="call" href="tel:0528911555" data-contact="call">📞 התקשרו לליאור</a>
+  <a class="wa" href="https://wa.me/972528911555?text=%D7%94%D7%99%D7%99%20%D7%9C%D7%99%D7%90%D7%95%D7%A8%2C%20%D7%90%D7%A9%D7%9E%D7%97%20%D7%9C%D7%91%D7%93%D7%99%D7%A7%D7%AA%20%D7%AA%D7%99%D7%A7%20%D7%A4%D7%A0%D7%A1%D7%99%D7%95%D7%A0%D7%99" target="_blank" rel="noopener" data-contact="whatsapp">💬 וואטסאפ</a>
+</nav>
+
 <script>
+  // המרה: לחיצה על טלפון / וואטסאפ (כולל המספר בכותרת ובפוטר)
+  (function () {
+    var CONTACT_CLICK = 'AW-18450756283/QADBCMXs94AdELvlgN5E';
+    var last = 0;
+    document.addEventListener('click', function (e) {
+      var a = e.target && e.target.closest ? e.target.closest('a[href^="tel:"], a[href*="wa.me"]') : null;
+      if (!a || typeof gtag !== 'function') return;
+      var now = Date.now(); if (now - last < 1500) return; last = now;
+      gtag('event', 'conversion', { send_to: CONTACT_CLICK });
+    }, true);
+  })();
+
   (function () {
     var form = document.getElementById('lead-form');
     var msg = document.getElementById('msg');
